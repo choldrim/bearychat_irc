@@ -20,11 +20,39 @@ class Cache():
     def get_user_true_name(u_id):
         if not len(Cache.members):
             Cache.init()
+
+        anonymous = "anonymous"
+
         for m in Cache.members:
             if m.get("id") == u_id:
-                return m.get("full_name")
+                name = m.get("full_name")
+                if not name:
+                    return anonymous
+                if not name.strip():
+                    return anonymous
+                return name
 
-        return "anonymous"
+        return anonymous
+
+    def get_user_en_name(u_id):
+        name = Cache.get_user_true_name(u_id)
+
+        # check ascii name
+        if all(ord(c) < 128 for c in name):
+            return name
+        else:
+            m = None
+            for _m in Cache.members:
+                if _m.get("id") == u_id:
+                     m = _m
+            if not m:
+                return "anonymous"
+            email = m.get("email")
+            if email:
+                name = email.split("@")[0]
+                return name
+            else:
+                return "anonymous"
 
     def get_robot_true_name(r_id):
         if not len(Cache.robots):

@@ -12,7 +12,7 @@ import logger
 BC_INI = "bearychat.ini"
 IRC_INI = "config.ini"
 
-WS_MSG_LOG_FILE = "/tmp/bc_irc_robot_ws_msg.log"
+WS_MSG_LOG_FILE = "/tmp/__bc_irc_robot_ws_msg.log"
 
 class BC_Server(object):
 
@@ -40,6 +40,7 @@ class BC_Server(object):
 
     def ws_msg_log(self, msg):
         self.ws_msg_log_fp.write("%s\n" % msg)
+        self.ws_msg_log_fp.flush()
 
 
     def send_ping(self, ws):
@@ -109,7 +110,7 @@ class BC_Server(object):
             name = Cache.get_robot_true_name(sender_id)
         else:
             sender_id = data.get("uid")
-            name = Cache.get_user_true_name(sender_id)
+            name = Cache.get_user_en_name(sender_id)
 
         # filter sender
         if sender_id in self.id_filter:
