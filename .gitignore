@@ -1,6 +1,7 @@
 tmp.txt
 t.py
 *.ini
+nohup.out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
