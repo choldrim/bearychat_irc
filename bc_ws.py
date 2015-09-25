@@ -126,6 +126,8 @@ class BC_Server(object):
 
 
     def send_irc_msg(self, user, msg):
+        if len(msg) == 0:
+            return
         c = self.irc_channel
         msg = "[%s]: %s" %(user, msg)
         self.irc_bot.privmsg(c, msg)
