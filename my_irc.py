@@ -17,6 +17,11 @@ class Plugin(object):
 
     def __init__(self, bot):
         self.bot = bot
+        config = configparser.ConfigParser()
+        config.read("config.ini")
+        users = config["bot"]["ignore_users"]
+        self.ignore_users = [u for u in users.split("\n") if len(u.strip()) > 0]
+
         self.bc = Bearychat()
 
         self.bc_server = BC_Server(self.bot)
@@ -28,8 +33,9 @@ class Plugin(object):
     @irc3.event(irc3.rfc.PRIVMSG)
     def recv_msg(self, mask, event, target, data):
         msg = "[%s]: %s" %(mask.nick, data)
-        self.bc.say(msg)
-        logger.log("irc => bc: %s" % msg)
+        if mask.nick not in self.ignore_users:
+            self.bc.say(msg)
+            logger.log("irc => bc: %s" % msg)
 
 
     '''
