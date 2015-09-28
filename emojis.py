@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 
 import json
+import os
 
 class Emojis:
     
     def __init__(self):
         self.cache = None
-        with open("emojis.json") as fp:
+        emoji_file = os.path.join(os.path.dirname(__file__), "emojis.json")
+        with open(emoji_file) as fp:
             self.cache = json.load(fp)
 
 
