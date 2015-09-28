@@ -10,6 +10,7 @@ from bearychat import Bearychat
 
 from bc_ws import BC_Server
 from bc_api import BC_API
+from emojis import Emojis
 import logger
 
 @irc3.plugin
@@ -26,12 +27,15 @@ class Plugin(object):
 
         self.bc_server = BC_Server(self.bot)
 
+        self.emojis = Emojis()
+
         # run bc ws client in background
         threading.Thread(target=self.bc_server.start_server).start()
 
 
     @irc3.event(irc3.rfc.PRIVMSG)
     def recv_msg(self, mask, event, target, data):
+        data = self.emojis.transfer_sentence_with_plain_word(data)
         msg = "[%s]: %s" %(mask.nick, data)
         if mask.nick not in self.ignore_users:
             self.bc.say(msg)

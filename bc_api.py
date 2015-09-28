@@ -43,9 +43,6 @@ class BC_API(Singleton):
             }
         r = requests.get(url, params=p, cookies=self.cookies)
 
-        with open("tmp.txt", "w") as fp:
-            fp.write(r.text)
-
         members = r.json().get("result", [])
         return members 
 
