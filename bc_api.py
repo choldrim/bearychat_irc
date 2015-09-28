@@ -1,12 +1,13 @@
 
 import configparser
+import os
 
 import requests
 
 from singleton import Singleton
 
 
-BC_INI = "bearychat.ini"
+BC_INI = os.path.join(os.path.dirname(__file__), "bearychat.ini")
 
 class BC_API(Singleton):
 

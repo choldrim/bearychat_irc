@@ -1,8 +1,10 @@
 import configparser
+import os
 
 import requests
 
-BC_INI = "bearychat.ini"
+BC_INI = os.path.join(os.path.dirname(__file__), "bearychat.ini")
+
 class Bearychat(object):
 
     def __init__(self):

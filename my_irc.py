@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import configparser
 import threading
+import os
 
 import irc3
 from irc3.utils import IrcString
@@ -13,13 +14,15 @@ from bc_api import BC_API
 from emojis import Emojis
 import logger
 
+CONF_FILE = os.path.join(os.path.dirname(__file__), "config.ini")
+
 @irc3.plugin
 class Plugin(object):
 
     def __init__(self, bot):
         self.bot = bot
         config = configparser.ConfigParser()
-        config.read("config.ini")
+        config.read(CONF_FILE)
         users = config["bot"]["ignore_users"]
         self.ignore_users = [u for u in users.split("\n") if len(u.strip()) > 0]
 

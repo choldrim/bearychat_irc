@@ -2,6 +2,7 @@ import configparser
 import json
 import threading
 import time
+import os
 
 from websocket import create_connection
 
@@ -9,8 +10,8 @@ from bc_api import BC_API
 from cache import Cache
 import logger
 
-BC_INI = "bearychat.ini"
-IRC_INI = "config.ini"
+BC_INI = os.path.join(os.path.dirname(__file__), "bearychat.ini")
+IRC_INI = os.path.join(os.path.dirname(__file__), "config.ini")
 
 WS_MSG_LOG_FILE = "/tmp/__bc_irc_robot_ws_msg.log"
 
