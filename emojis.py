@@ -45,33 +45,43 @@ class Emojis:
         return _sentence
 
 
-    def transfer_sentence_with_unicode_char(self, sentence):
+    def transfer_sentence_with_unicode_char(self, sentence, start=0):
         return sentence
 
         # incompleted
         _sentence = []
-        items = sentence.split(":")
-        i = 0
-        for item in items:
-            if i == 0:
-                _sentence.append(item)
-                i += 1
-                continue
-            if i == len(items) - 1:
-                _sentence.append(item)
-                break
+        colon_count = sentence.find(":", start)
+        if colon_count >= 2:
+            p1 = sentence.index(":", start)
+            p2 = sentence.index(":", start+p1+1)
+            emoji_word = sentence[p1+1:p2]
+            emoji_u = self.emoji_word_2_unicode_char(emoji_word)
+            if emoji_u:
+                _sentence.append(sentence[:p1])
+                _sentence.append(emoji_word)
+                _sentence.append(sentence[p2+1:])
+                _s = "".join(_sentence)
+                return self.transfer_sentence_with_unicode_char(_s)
+            else:
+                return self.transfer_sentence_with_unicode_char(sentence, p2)
 
-        return _sentence
-
+        else:
+            return sentence
 
     def check_ascii(self, c):
-        if ord(c) > 128 or ord(c) < 0:
-            return False
-        return True
+        if ord(c) < 128 and ord(c) > 0:
+            return True
+        return False
 
     def check_chinese(self, c):
-        if ord(c) > 40869 or ord(c) < 19968:
-            return False
-        return True
+        # chinese word
+        if ord(c) > 0x4e00 and ord(c) < 0x9fa5:
+            return True
+
+        # punctuation
+        elif ord(c) >0x300 and ord(c) < 0x303f:
+            return True
+
+        return False
 
 

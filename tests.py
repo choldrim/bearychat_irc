@@ -76,7 +76,7 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(s_transfered, s_expected)
         
 
-    @unittest.skip("incomplete")
+    #@unittest.skip("incomplete")
     def test_transfer_sentence_with_unicode_char(self):
         e = Emojis()
         s_origin = "hello, :blush: every one! :stuck_out_tongue_winking_eye:"
