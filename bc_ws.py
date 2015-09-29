@@ -8,6 +8,7 @@ from websocket import create_connection
 
 from bc_api import BC_API
 from cache import Cache
+from emojis import Emojis
 import logger
 
 BC_INI = os.path.join(os.path.dirname(__file__), "bearychat.ini")
@@ -20,6 +21,7 @@ class BC_Server(object):
     def __init__(self, irc_bot=None):
         self.irc_bot = irc_bot
 
+        # bc config
         config_bc = configparser.ConfigParser()
         config_bc.read(BC_INI)
         id_filter = config_bc["global"]["id_filter"]
@@ -28,15 +30,15 @@ class BC_Server(object):
 
         self.id_filter = [i for i in id_filter.split("\n") if len(i.strip()) > 0]
 
+        # irc config
         config_irc = configparser.ConfigParser()
         config_irc.read(IRC_INI)
         self.irc_channel = "#%s" % config_irc["bot"]["autojoins"]
 
-        Cache.init()
-
-        self.loop_thread = None
-
+        # wwebsocket log file
         self.ws_msg_log_fp = open(WS_MSG_LOG_FILE, "a")
+
+        self.emojis = Emojis()
 
 
     def ws_msg_log(self, msg):
@@ -130,7 +132,12 @@ class BC_Server(object):
         if len(msg) == 0:
             return
         c = self.irc_channel
-        msg = "[%s]: %s" %(user, msg)
+        msg = self.pre_handle_irc_msg(user, msg)
         self.irc_bot.privmsg(c, msg)
         logger.log("bc => irc: %s" % msg)
+
+    def pre_handle_irc_msg(self, user, msg):
+        msg = self.emojis.transfer_sentence_with_unicode_char(msg)
+        msg = "[%s]: %s" %(user, msg)
+        return msg
 

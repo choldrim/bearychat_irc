@@ -46,23 +46,22 @@ class Emojis:
 
 
     def transfer_sentence_with_unicode_char(self, sentence, start=0):
-        return sentence
-
-        # incompleted
         _sentence = []
-        colon_count = sentence.find(":", start)
+        subsentence = sentence[start:]
+        colon_count = subsentence.count(":")
         if colon_count >= 2:
             p1 = sentence.index(":", start)
-            p2 = sentence.index(":", start+p1+1)
+            p2 = sentence.index(":", p1+1)
             emoji_word = sentence[p1+1:p2]
             emoji_u = self.emoji_word_2_unicode_char(emoji_word)
             if emoji_u:
                 _sentence.append(sentence[:p1])
-                _sentence.append(emoji_word)
+                _sentence.append(emoji_u)
                 _sentence.append(sentence[p2+1:])
                 _s = "".join(_sentence)
                 return self.transfer_sentence_with_unicode_char(_s)
             else:
+                # not an emoji word, skip the colon symbol
                 return self.transfer_sentence_with_unicode_char(sentence, p2)
 
         else:
@@ -79,7 +78,7 @@ class Emojis:
             return True
 
         # punctuation
-        elif ord(c) >0x300 and ord(c) < 0x303f:
+        elif ord(c) > 0x3000 and ord(c) < 0x303f:
             return True
 
         return False

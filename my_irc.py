@@ -12,6 +12,7 @@ from bearychat import Bearychat
 from bc_ws import BC_Server
 from bc_api import BC_API
 from emojis import Emojis
+from cache import Cache
 import logger
 
 CONF_FILE = os.path.join(os.path.dirname(__file__), "config.ini")
@@ -25,6 +26,9 @@ class Plugin(object):
         config.read(CONF_FILE)
         users = config["bot"]["ignore_users"]
         self.ignore_users = [u for u in users.split("\n") if len(u.strip()) > 0]
+
+        # fill the bearychat cache
+        Cache.init()
 
         self.bc = Bearychat()
 
