@@ -3,6 +3,8 @@ import os
 
 import requests
 
+import logger
+
 BC_INI = os.path.join(os.path.dirname(__file__), "bearychat.ini")
 
 class Bearychat(object):
@@ -20,4 +22,4 @@ class Bearychat(object):
         payload = {"payload":'{"text":"%s"}' % text}
 
         r = requests.post(self.hook_url, params=payload, headers=h)
-        print ("bearychat response: %s", r.text)
+        logger.log("bearychat response: %s" % r.text)

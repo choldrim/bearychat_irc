@@ -45,8 +45,8 @@ class Plugin(object):
         data = self.emojis.transfer_sentence_with_plain_word(data)
         msg = "[%s]: %s" %(mask.nick, data)
         if mask.nick not in self.ignore_users:
-            self.bc.say(msg)
             logger.log("irc => bc: %s" % msg)
+            self.bc.say(msg)
 
 
     '''

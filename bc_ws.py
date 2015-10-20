@@ -65,6 +65,7 @@ class BC_Server(object):
         ws_url = api.get_ws_url()
 
         ws = create_connection(ws_url)
+        logger.log("connected to bc server")
 
         # send ping thread
         threading.Thread(target=self.send_ping, args=(ws, )).start()
@@ -76,11 +77,19 @@ class BC_Server(object):
     def server_loop(self, ws):
         while True:
             result = ws.recv()
-            data = json.loads(result)
-            if data.get("type") == "channel_message":
-                self.ws_msg_log(result)
-            self.handle_msg(data)
-        ws.close()
+            if len(result):
+                data = json.loads(result)
+                if data.get("type") == "channel_message":
+                    self.ws_msg_log(result)
+                self.handle_msg(data)
+            else:
+                logger.log("recv empty msg, connected: ", ws.connected)
+                if not ws.connected:
+                    logger.log(">>>>> ws conn may be kicked by bc server")
+                    break
+
+        logger.log("re-connecting to bc server")
+        self.start_server()
 
 
     def handle_msg(self, data):
@@ -126,6 +135,8 @@ class BC_Server(object):
         if msg.startswith(self.msg_enable_pre):
             msg = msg.split(self.msg_enable_pre, 1)[-1:][0]
             self.send_irc_msg(name, msg)
+        else:
+            logger.log("bc msg (%s) was not the standardized format, abort forwarding" % (msg))
 
 
     def send_irc_msg(self, user, msg):
@@ -135,6 +146,7 @@ class BC_Server(object):
         msg = self.pre_handle_irc_msg(user, msg)
         self.irc_bot.privmsg(c, msg)
         logger.log("bc => irc: %s" % msg)
+
 
     def pre_handle_irc_msg(self, user, msg):
         msg = self.emojis.transfer_sentence_with_unicode_char(msg)
