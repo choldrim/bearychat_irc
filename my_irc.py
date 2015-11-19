@@ -24,8 +24,10 @@ class Plugin(object):
         self.bot = bot
         config = configparser.ConfigParser()
         config.read(CONF_FILE)
-        users = config["bot"]["ignore_users"]
-        self.ignore_users = [u for u in users.split("\n") if len(u.strip()) > 0]
+        self.ignore_users = []
+        if "ignore_users" in config["bot"]:
+            users = config["bot"]["ignore_users"]
+            self.ignore_users = [u for u in users.split("\n") if len(u.strip()) > 0]
 
         # fill the bearychat cache
         Cache.init()
@@ -59,6 +61,7 @@ class Plugin(object):
         if mask.nick != self.bot.nick:
             self.bot.privmsg(channel, 'Hi %s!' % mask.nick)
     '''
+
 
     @command(permission='view')
     def echo(self, mask, target, args):
