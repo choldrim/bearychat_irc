@@ -1,6 +1,11 @@
 # bearychat_irc
 a robot bridge between bearychat and irc
 
+## Dependences
+```shell
+sudo pip3 install -r reqirements.txt
+```
+
 ## Usage
 #### 1. cp the template
 ```shell
