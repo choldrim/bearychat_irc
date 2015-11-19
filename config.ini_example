@@ -1,0 +1,33 @@
+[bot]
+nick = irc-bot
+realname = irc-bot
+
+host = chat.freenode.net
+port = 6667
+
+# the bot will join the channel
+autojoins = deepin
+
+# filter the users list bellow
+#ignore_users = ChanServ
+
+includes =
+    irc3.plugins.command
+    my_irc
+# my_irc is the python module which you write
+
+
+[irc3.plugins.command]
+# command plugin configuration
+
+# set command char
+cmd = !
+
+# set guard policy
+guard = irc3.plugins.command.mask_based_policy
+
+[irc3.plugins.command.masks]
+# this section is used by the guard to secure the bot's command
+# change your nickname and uncomment the line below
+# choldrim!*@* = all_permissions
+* = view
