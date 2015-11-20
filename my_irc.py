@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import configparser
-import threading
 import os
 
 import irc3
@@ -9,7 +8,7 @@ from irc3.plugins.command import command
 
 from bearychat import Bearychat
 
-from bc_ws import BC_Server
+from bc_daemon import BC_Daemon
 from bc_api import BC_API
 from emojis import Emojis
 from cache import Cache
@@ -34,12 +33,10 @@ class Plugin(object):
 
         self.bc = Bearychat()
 
-        self.bc_server = BC_Server(self.bot)
-
         self.emojis = Emojis()
 
-        # run bc ws client in background
-        threading.Thread(target=self.bc_server.start_server).start()
+        self.bc_dm = BC_Daemon(self.bot)
+        self.bc_dm.start()
 
 
     @irc3.event(irc3.rfc.PRIVMSG)

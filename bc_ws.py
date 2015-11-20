@@ -4,6 +4,8 @@ import threading
 import time
 import os
 
+from datetime import datetime
+
 from websocket import create_connection
 
 from bc_api import BC_API
@@ -40,6 +42,8 @@ class BC_Server(object):
 
         self.emojis = Emojis()
 
+        self.exit_all = False
+
 
     def ws_msg_log(self, msg):
         self.ws_msg_log_fp.write("%s\n" % msg)
@@ -48,7 +52,7 @@ class BC_Server(object):
 
     def send_ping(self, ws):
         msg_id = 0
-        while True:
+        while not self.exit_all:
             try:
                 msg = '{"type":"ping","call_id":%d}' % msg_id
                 ws.send(msg)
@@ -75,8 +79,11 @@ class BC_Server(object):
 
 
     def server_loop(self, ws):
-        while True:
+        while not self.exit_all:
             result = ws.recv()
+            with open("/tmp/__bc_irc_all_ws_msg.log", "a") as fp:
+                now = datetime.now()
+                fp.write("%s: %s\n" %(str(now), result))
             if len(result):
                 data = json.loads(result)
                 if data.get("type") == "channel_message":
@@ -87,9 +94,6 @@ class BC_Server(object):
                 if not ws.connected:
                     logger.log(">>>>> ws conn may be kicked by bc server")
                     break
-
-        logger.log("re-connecting to bc server")
-        self.start_server()
 
 
     def handle_msg(self, data):
@@ -152,4 +156,8 @@ class BC_Server(object):
         msg = self.emojis.transfer_sentence_with_unicode_char(msg)
         msg = "[%s]: %s" %(user, msg)
         return msg
+
+
+    def stop_all(self):
+        self.stop_all = True
 
