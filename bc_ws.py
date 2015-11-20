@@ -81,9 +81,6 @@ class BC_Server(object):
     def server_loop(self, ws):
         while not self.exit_all:
             result = ws.recv()
-            with open("/tmp/__bc_irc_all_ws_msg.log", "a") as fp:
-                now = datetime.now()
-                fp.write("%s: %s\n" %(str(now), result))
             if len(result):
                 data = json.loads(result)
                 if data.get("type") == "channel_message":
