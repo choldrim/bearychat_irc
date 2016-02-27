@@ -1,5 +1,6 @@
 import threading
 import time
+import os
 
 from datetime import datetime
 from datetime import timedelta
@@ -18,12 +19,23 @@ class BC_Daemon:
     def __init__(self, bot):
         self.bot = bot
         self.bc_server = None
+        threading.Thread(target=self.checking_live_thread).start()
 
     def start(self):
         # run bc ws client in background
         self.bc_server = BC_Server(self.bot)
         threading.Thread(target=self.bc_server.start_server).start()
         threading.Thread(target=self.count_down).start()
+
+
+    def checking_live_thread(self):
+        while True:
+            time.sleep(60)
+            if self.bc_server.connect_live:
+                self.bc_server.connect_live = False
+            else:
+                self.restart()
+
 
     def count_down(self):
         cur = datetime.now()
@@ -44,5 +56,7 @@ class BC_Daemon:
     def restart(self):
         self.bc_server.exit_all = True
         time.sleep(30)
+        os.system('mv /tmp/__bc_irc_robot_ws_msg.log /tmp/__bc_irc_robot_ws_msg.log_$(date --date="1 day ago" +"%Y-%m-%d")')
+        os.system("touch /tmp/__bc_irc_robot_ws_msg.log")
         self.start()
 

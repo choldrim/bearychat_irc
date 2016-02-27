@@ -20,6 +20,9 @@ WS_MSG_LOG_FILE = "/tmp/__bc_irc_robot_ws_msg.log"
 
 class BC_Server(object):
 
+    # refreshed by recv any msg
+    connect_live = True
+
     def __init__(self, irc_bot=None):
         self.irc_bot = irc_bot
 
@@ -45,8 +48,8 @@ class BC_Server(object):
         self.exit_all = False
 
 
-    def ws_msg_log(self, msg):
-        self.ws_msg_log_fp.write("%s\n" % msg)
+    def ws_msg_log(self, msg, iotype):
+        self.ws_msg_log_fp.write("%s %s\n" % (iotype, msg))
         self.ws_msg_log_fp.flush()
 
 
@@ -55,6 +58,7 @@ class BC_Server(object):
         while not self.exit_all:
             try:
                 msg = '{"type":"ping","call_id":%d}' % msg_id
+                self.ws_msg_log(msg, ">>>")
                 ws.send(msg)
                 msg_id += 1
                 time.sleep(5)
@@ -82,9 +86,10 @@ class BC_Server(object):
         while not self.exit_all:
             result = ws.recv()
             if len(result):
+                self.connect_live = True
                 data = json.loads(result)
-                if data.get("type") == "channel_message":
-                    self.ws_msg_log(result)
+                #if data.get("type") == "channel_message":
+                self.ws_msg_log(result, "<<<")
                 self.handle_msg(data)
             else:
                 logger.log("recv empty msg, connected: ", ws.connected)
