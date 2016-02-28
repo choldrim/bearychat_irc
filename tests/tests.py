@@ -2,9 +2,14 @@
 # coding=utf-8
 
 import unittest
+import sys
 
-from bc_api import BC_API
-from emojis import Emojis
+sys.path.append("..")
+
+from lib.bc_api import BC_API
+from lib.emojis import Emojis
+
+from lib.logger import Logger
 
 class TestMethods(unittest.TestCase):
 
@@ -25,9 +30,12 @@ class TestMethods(unittest.TestCase):
         api.login()
         ws_url = api.get_ws_url()
         import re
-        r = re.compile("wss://bearychat.com/nimbus/ws:\w+")
-        l = len(r.findall(ws_url))
-        self.assertNotEqual(l, 0)
+        r = re.compile("wss://bearychat.com/nimbus/ws:(\w+)")
+        find_list = r.findall(ws_url)
+        self.assertNotEqual(len(find_list), 0)
+
+        ws = find_list[0]
+        self.assertNotEqual(len(ws), 0)
 
 
     def test_unicode_char_2_emoji_word(self):
@@ -118,6 +126,20 @@ class TestMethods(unittest.TestCase):
         expected = "hello, how are you!☺️"
         self.assertEqual(transfered, expected)
 
+
+    def test_logger_log_msg_transfer(self):
+        Logger.log_msg_transfer("testunit: irc => bc hello test")
+
+    def test_logger_log_reboot(self):
+        Logger.log_reboot("testunit: reboot server hello test")
+
+
+    def test_logger_log_bc_ws(self):
+        Logger.log_bc_ws("testunit: bearychat websocket hello test")
+
+
+    def test_logger_log(self):
+        Logger.log_default("testunit: default log, hello test")
 
 if __name__ == "__main__":
     unittest.main()

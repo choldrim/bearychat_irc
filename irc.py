@@ -6,13 +6,10 @@ import irc3
 from irc3.utils import IrcString
 from irc3.plugins.command import command
 
-from bearychat import Bearychat
-
-from bc_daemon import BC_Daemon
-from bc_api import BC_API
-from emojis import Emojis
-from cache import Cache
-import logger
+from lib.bearychat import Bearychat
+from lib.emojis import Emojis
+from lib.cache import Cache
+from lib.logger import Logger
 
 CONF_FILE = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -31,12 +28,9 @@ class Plugin(object):
         # fill the bearychat cache
         Cache.init()
 
-        self.bc = Bearychat()
+        self.bc = Bearychat(self.bot)
 
         self.emojis = Emojis()
-
-        self.bc_dm = BC_Daemon(self.bot)
-        self.bc_dm.start()
 
 
     @irc3.event(irc3.rfc.PRIVMSG)
@@ -44,20 +38,8 @@ class Plugin(object):
         data = self.emojis.transfer_sentence_with_plain_word(data)
         msg = "[%s]: %s" %(mask.nick, data)
         if mask.nick not in self.ignore_users:
-            logger.log("irc => bc: %s" % msg)
+            Logger.log_msg_transfer("irc => bc: %s" % msg)
             self.bc.say(msg)
-
-
-    '''
-    @irc3.event(irc3.rfc.JOIN)
-    def say_hi(self, mask, channel):
-        """Say hi when someone join a channel"""
-        print(type(channel))
-        print(channel)
-        print(IrcString("hello"))
-        if mask.nick != self.bot.nick:
-            self.bot.privmsg(channel, 'Hi %s!' % mask.nick)
-    '''
 
 
     @command(permission='view')
