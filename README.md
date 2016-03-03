@@ -3,7 +3,7 @@ a robot bridge between bearychat and irc
 
 ## Dependences
 ```shell
-sudo pip3 install -r reqirements.txt
+sudo pip3 install -r requirements.txt
 ```
 
 ## Usage
