@@ -1,9 +1,4 @@
 [global]
-# any words said by the filter ids won't be forward to irc
-id_filter = 
-    =bwxxA
-    =bwxxB
-
 # any msg starts with this will be forwarded to irc
 msg_enable_pre = >
 
@@ -13,9 +8,11 @@ grouphook = https://hook.bearychat.com/=bwxxx/incoming/xxxxxxxxxxxx
 # bc channel, irc msg will be forwarded to this channel
 channel_id = =bwxxx
 
+# any words said by the filter ids won't be forward to irc
+id_filter = 
+    =bwxxA
+    =bwxxB
+
 [robot]
 username = name@domain.com
 password = passwd
-id = =bwxxx
-
-
