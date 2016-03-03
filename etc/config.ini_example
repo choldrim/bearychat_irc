@@ -13,7 +13,7 @@ autojoins = deepin
 
 includes =
     irc3.plugins.command
-    my_irc
+    irc
 # my_irc is the python module which you write
 
 
