@@ -1,4 +1,5 @@
 import configparser
+import json
 import threading
 import time
 import os
@@ -66,7 +67,8 @@ class Robot:
             return
 
         h = {"Content-Type": "application/json; charset=UTF-8"}
-        payload = {"payload":'{"text":"%s"}' % text}
+        text_dict = {"text": text}
+        payload = {"payload": json.dumps(text_dict)}
 
         r = requests.post(self.hook_url, params=payload, headers=h)
         Logger.log_msg_transfer("send msg to bearychat, response text: %s" % r.text)
